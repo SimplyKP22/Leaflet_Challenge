@@ -7,6 +7,7 @@ var earthquakes = L.layerGroup();
 
 // Adding a tile layer
 // We use mapbox to provide added mapping functionality above what is readily available in openstreetmap alone
+// Note that a token is needed passed in as an API_KEY
 var lightStyleMap = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
   attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
   tileSize: 512,
@@ -35,7 +36,8 @@ d3.json(equakeURL).then(function (data) {
     return magnitude * 8;
   };
 
-  // data markers should reflect the depth of the earthquake by their color
+  // The data markers should reflect the depth of the earthquake by their color
+  // Create a function that will select the appropriate color for the marker based on the condition
   function markerColor(depth) {
     // It is easier to go from largest option to smallest for this conditional logic
     switch(true) {
@@ -82,15 +84,15 @@ d3.json(equakeURL).then(function (data) {
   earthquakes.addTo(myMap);
 
     // Add legend
+    // Important note: The css file contains the styling information that will facilitate the legend appearing correctly
+    // on the map
   var legend = L.control({position: "bottomright"});
   legend.onAdd = function() {
-    var div = L.DomUtil.create("div", "info legend"),
+    var div = L.DomUtil.create("div", "info legend");
     depth = [-10, 10, 30, 50, 70, 90];
     
-    div.innerHTML += "<h3 style='text-align: center'>Depth</h3>"
   for (var i =0; i < depth.length; i++) {
-    div.innerHTML += 
-    '<i style="background:' + markerColor(depth[i] + 1) + '"></i> ' +
+    div.innerHTML += '<i style="background:' + markerColor(depth[i] + 1) + '"></i> ' +
         depth[i] + (depth[i + 1] ? '&ndash;' + depth[i + 1] + '<br>' : '+');
       }
     return div;
